@@ -1,6 +1,8 @@
 # dsws
 Demi Static WebSite tool and browser extension
 
+* browser extension in typescript
+* python/go/node for the cli tool
 
 ## Useful links during development
 
