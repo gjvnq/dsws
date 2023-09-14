@@ -1,0 +1,4 @@
+dsws
+*.exe
+*.so
+*.dylib
