@@ -1,5 +1,6 @@
 "use strict";
 const dropContainer = document.getElementById("dropContainer");
+const dropContainerText = document.getElementById("dropContainerText");
 const fileInput = document.getElementById("fileInput");
 // Se algum arquivo for enviado pelo botão mostrar também no container.
 fileInput.addEventListener("input", () => {
@@ -17,7 +18,7 @@ if (dropContainer) {
         // Se algum arquivo for arrastado ao container mostrar seu nome no próprio container.
         if (e.dataTransfer) {
             console.log(e.dataTransfer.files[0].name);
-            dropContainer.innerHTML = "<strong>Arquivo selecionado:</strong>&nbsp;" + e.dataTransfer.files[0].name;
+            dropContainerText.innerHTML = "<strong>Arquivo selecionado:</strong>&nbsp;" + e.dataTransfer.files[0].name;
             // Se algum arquivo for arrastado ao container mostrar também no input.
             if (fileInput) {
                 const dT = new DataTransfer();
