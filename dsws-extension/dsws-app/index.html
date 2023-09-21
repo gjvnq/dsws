@@ -3,23 +3,31 @@
 
     <head>
         <meta charset="UTF-8">
-		<link rel="stylesheet" href="styles.css">
+		<link rel="stylesheet" href="assets/css/styles.css">
         <title>DWSW</title>
     </head>
     
     <body>
+        <div id="container">
         <h1 id="title">Demi Static WebSite - DSWS</h1>
 
-		<div id="dropContainer">
-			Arraste o arquivo para esta caixa!
-		</div>
+        <div id="FileContainer">
+            <h1 id="FileContainerText">Upload your file</h1>
+            
+            <div id="dropContainer">
+                <div id="dropContainerImages">
+                    <img class="firstImage" src="assets/images/dragndropfirstimage.png">
+                    <img class="secondImage" src="assets/images/dragndropsecondimage.png">
+                    <img class="thirdImage" src="assets/images/dragndropthirdimage.png">
+                </div>
+                <p id="dropContainerText">drag and drop your files here, or                     
+                    <a href="#" id="fileButton">browse</a>
+                    <input type="file" id="fileInput"> your computer</p>
+            </div>
+        </div>
 
-		<p id="input">
-			Ou clique aqui:
-			<input type="file" id="fileInput"/>
-		</p>
-        
         <script src="build/index.js"></script>
+        <script src="build/inputLink.js"></script>
     </body>
 
 </html>
