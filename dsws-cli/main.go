@@ -18,11 +18,14 @@ var versionCmd = &cobra.Command{
 }
 
 var packCmd = &cobra.Command{
-	Use:   "pack",
+	Use:   "pack [flags] [SRC_DIR] [OUT_FILE]",
 	Short: "Packs a folder as .dsws file",
 	Long:  `Takes a static website folder and packs it in an easy to play format`,
+	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Not implemented")
+		src_path := args[0]
+		out_path := args[1]
+		PackDir(src_path, out_path)
 	},
 }
 
