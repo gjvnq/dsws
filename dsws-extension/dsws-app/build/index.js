@@ -5,7 +5,19 @@ const fileInput = document.getElementById("fileInput");
 // Se algum arquivo for enviado pelo botão mostrar também no container.
 fileInput.addEventListener("input", () => {
     if (dropContainer && fileInput.files) {
+        var zip= new JSZip();
         dropContainer.innerHTML = "<strong>Arquivo selecionado:</strong>&nbsp;" + fileInput.files[0].name;
+        var file=fileInput.files[0]
+        var text="";
+        zip.loadAsync(file).then(function(zip) {
+        	Object.keys(zip.files).forEach(function(file){
+        		zip.files[file].async('string').then(function (fileData) {
+        			text= text+"<strong>Arquivo selecionado:</strong>&nbsp;" + file+"<br>";
+        			dropContainer.innerHTML=text;
+        		})
+        	})
+        })
+        
     }
 });
 // Ao arrastar um arquivo ao container não abrir uma nova aba.
