@@ -39,7 +39,7 @@ body{
     background-color: #D9D9D9;
     border: 3px dashed #706e6e;
     border-width: 4px;
-    border-image-source:url("assets/images/dashedLineImages.png");  
+    border-image-source:url("../images/dashedLineImage.png");  
     border-image-width: 0.37;
     border-image-repeat: round;
     border-image-slice: 1; 
