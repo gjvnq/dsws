@@ -1,8 +1,8 @@
 "use strict";
 const dropContainer = document.getElementById("dropContainer");
-const dropContainerText = document.getElementById("dropContainerText");
 const urlInput = document.getElementById("urlInput");
 
+var dropContainerText = document.getElementById("dropContainerText");
 var fileInput = document.getElementById("fileInput");
 var fileButton = document.getElementById('fileButton');
 
@@ -11,13 +11,19 @@ var asset_ids = [];
 
 // Ao terminar de carregar a página inteira executa a função.
 window.onload = function(){
-    //Se algum click for dado no link "browse" aciona o fileInput
-    fileButton.addEventListener('click', () => {
-        // Acionar o clique no input de arquivo
-        fileInput.click();
-    });
-    // Faz o link entre o clique no botão com a funçao onFileInput
-    fileInput.addEventListener("input", onFileInput);
+    // Checa se os elementos da página foram carregados corretamente.
+    if (dropContainer && urlInput && dropContainerText && fileInput && fileButton){
+        //Se algum click for dado no link "browse" aciona o fileInput
+        fileButton.addEventListener('click', () => {
+            // Acionar o clique no input de arquivo
+            fileInput.click();
+        });
+        // Faz o link entre o clique no botão com a funçao onFileInput
+        fileInput.addEventListener("input", onFileInput);
+    }
+    else {
+        alert("Página carregada incorretamente, favor recarregá-la!");
+    }
 }
 
 
@@ -28,14 +34,22 @@ function changeContainerText(file){
     '<a id="fileButton">browse another file</a>' +
     '<input type="file" id="fileInput"></p>';
 
-    fileButton = document.getElementById('fileButton');
-    fileButton.addEventListener('click', () => {
-        // Acionar o clique no input de arquivo
-        fileInput.click();
-    });
-    // Faz o link entre o clique no botão com a funçao onFileInput
+    // Re-linka os elementos criados.
+    dropContainerText = document.getElementById("dropContainerText");
+    fileButton = document.getElementById("fileButton");
     fileInput = document.getElementById("fileInput");
-    fileInput.addEventListener("input", onFileInput);
+    // Checa se os elementos foram carregados corretamente.
+    if (fileButton && fileInput && dropContainerText){
+        fileButton.addEventListener('click', () => {
+            // Acionar o clique no input de arquivo
+            fileInput.click();
+        });
+        // Faz o link entre o clique no botão com a funçao onFileInput
+        fileInput.addEventListener("input", onFileInput);
+    }
+    else {
+        alert("Página carregada incorretamente, favor recarregá-la!");
+    }
 }
 
 // Função que é executada ao clicar no botão
@@ -49,16 +63,20 @@ function onFileInput() {
     var zip= new JSZip();
     //dropContainer.innerHTML += "<strong>Arquivo selecionado:</strong>&nbsp;" + file.name;
     var text="";
-    zip.loadAsync(file).then(function(zip) {
-    	Object.keys(zip.files).forEach(function(file){
-            text = text + "<strong>Arquivo selecionado:</strong>&nbsp;" + file + "<br>";
-    		zip.files[file].async('string').then(function (fileData) {
-                // Guarda "routes2.json"
-                if (file === "routes2.json") obj = JSON.parse(fileData);
-    		})
-    	})
-        dropContainerText.innerHTML=text;
-    })
+    // Checa se o arquivo possui extensão .dsws
+    if (((file.name).split('.').pop()).localeCompare("dsws") === 0){
+        zip.loadAsync(file).then(function(zip) {
+        	Object.keys(zip.files).forEach(function(file){
+                text = text + "<strong>Arquivo selecionado:</strong>&nbsp;" + file + "<br>";
+        		zip.files[file].async('string').then(function (fileData) {
+                    // Guarda "routes2.json"
+                    if (file === "routes2.json") obj = JSON.parse(fileData);
+        		})
+        	})
+            dropContainerText.innerHTML=text;
+        })
+    }
+    else alert("Arquivo fornecido não possui a extensão .dsws!");
 }
 
 
