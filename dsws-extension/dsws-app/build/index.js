@@ -1,58 +1,67 @@
 "use strict";
 const dropContainer = document.getElementById("dropContainer");
 const dropContainerText = document.getElementById("dropContainerText");
-const fileInput = document.getElementById("fileInput");
+const urlInput = document.getElementById("urlInput");
+
+var fileInput = document.getElementById("fileInput");
+var fileButton = document.getElementById('fileButton');
 
 var obj;
 var asset_ids = [];
-const urlInput = document.getElementById("urlInput");
 
-var fileButton = document.getElementById('fileButton');
+// Ao terminar de carregar a página inteira executa a função.
+window.onload = function(){
+    //Se algum click for dado no link "browse" aciona o fileInput
+    fileButton.addEventListener('click', () => {
+        // Acionar o clique no input de arquivo
+        fileInput.click();
+    });
+    // Faz o link entre o clique no botão com a funçao onFileInput
+    fileInput.addEventListener("input", onFileInput);
+}
+
 
 function changeContainerText(file){
     dropContainerText.innerHTML = '<strong>Arquivo selecionado:</strong>&nbsp;' + 
-    file.files[0].name + 
+    file.files[0].name +
     '<p id="dropContainerText">' +                     
     '<a id="fileButton">browse another file</a>' +
     '<input type="file" id="fileInput"></p>';
 
     fileButton = document.getElementById('fileButton');
-
     fileButton.addEventListener('click', () => {
         // Acionar o clique no input de arquivo
         fileInput.click();
     });
-
+    // Faz o link entre o clique no botão com a funçao onFileInput
+    fileInput = document.getElementById("fileInput");
+    fileInput.addEventListener("input", onFileInput);
 }
-// Se algum arquivo for enviado pelo botão mostrar também no container.
-fileInput.addEventListener("input", () => {
-    if (dropContainer && fileInput.files) {
+
+// Função que é executada ao clicar no botão
+function onFileInput() {
+    var file;
+    // Se algum arquivo for enviado pelo botão mostrar também no container.
+    if (dropContainer && fileInput.files) { 
+        file = fileInput.files[0];
         changeContainerText(fileInput);
     }
-});
+    var zip= new JSZip();
+    //dropContainer.innerHTML += "<strong>Arquivo selecionado:</strong>&nbsp;" + file.name;
+    var text="";
+    zip.loadAsync(file).then(function(zip) {
+    	Object.keys(zip.files).forEach(function(file){
+            text = text + "<strong>Arquivo selecionado:</strong>&nbsp;" + file + "<br>";
+    		zip.files[file].async('string').then(function (fileData) {
+                // Guarda "routes2.json"
+                if (file === "routes2.json") obj = JSON.parse(fileData);
+    		})
+    	})
+        dropContainerText.innerHTML=text;
+    })
+}
 
-//Se algum click for dado no link "browse" aciona o fileInput
-fileButton.addEventListener('click', () => {
-    // Acionar o clique no input de arquivo
-    fileInput.click();
-});
 
-        var zip= new JSZip();
-        dropContainer.innerHTML = "<strong>Arquivo selecionado:</strong>&nbsp;" + fileInput.files[0].name;
-        var file=fileInput.files[0]
-        var text="";
-        zip.loadAsync(file).then(function(zip) {
-        	Object.keys(zip.files).forEach(function(file){
-                text = text + "<strong>Arquivo selecionado:</strong>&nbsp;" + file + "<br>";
-        		zip.files[file].async('string').then(function (fileData) {
-                    // Guarda "routes2.json"
-                    if (file === "routes2.json") obj = JSON.parse(fileData);
-        		})
-        	})
-            dropContainer.innerHTML=text;
-        })
-    }
-});
 // Ao arrastar um arquivo ao container não abrir uma nova aba.
 if (dropContainer) {
     dropContainer.ondragover = function (e) {
