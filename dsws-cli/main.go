@@ -30,10 +30,11 @@ var packCmd = &cobra.Command{
 }
 
 var playCmd = &cobra.Command{
-	Use:   "play",
+	Use:   "play [DSWS FILE] [HOST/PORT]",
 	Short: "Plays a .dsws file",
+	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Not implemented")
+		PlayDswsFile(args[0], args[1])
 	},
 }
 

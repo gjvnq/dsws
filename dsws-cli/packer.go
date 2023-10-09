@@ -53,6 +53,27 @@ func NewUrlRouteNode() *UrlRouteNode {
 	return node
 }
 
+func (node *UrlRouteNode) Find(url_path string) *UrlRouteNode {
+	url_path = path.Clean(url_path)
+	url_path = strings.TrimPrefix(url_path, "/")
+	url_parts := strings.Split(url_path, "/")
+	return node.find(url_parts)
+}
+
+func (node *UrlRouteNode) find(url_parts []string) *UrlRouteNode {
+	if len(url_parts) == 0 {
+		return node
+	}
+
+	first_part := url_parts[0]
+	child := node.Children[first_part]
+	if child != nil {
+		return child.find(url_parts[1:])
+	} else {
+		return nil
+	}
+}
+
 func (node *UrlRouteNode) AddChild(url_path string, response *UrlRouteResponse) {
 	url_path = path.Clean(url_path)
 	url_path = strings.TrimPrefix(url_path, "/")
