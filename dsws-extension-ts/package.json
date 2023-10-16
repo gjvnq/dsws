@@ -1,0 +1,28 @@
+{
+  "name": "dsws-extension-ts",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --config webpack/webpack.config.mjs",
+    "watch": "webpack --config webpack/webpack.config.mjs --watch",
+    "start": "web-ext run --firefox-preview --devtools -s dist"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chrome": "^0.0.246",
+    "@types/js-base64": "^3.3.1",
+    "copy-webpack-plugin": "^11.0.0",
+    "js-base64": "^3.7.5",
+    "node-polyfill-webpack-plugin": "^2.0.1",
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.2.2",
+    "web-ext": "^7.8.0",
+    "web-ext-plugin": "^2.8.1",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "@zip.js/zip.js": "^2.7.30",
+    "zlibt2": "^0.6.1"
+  }
+}

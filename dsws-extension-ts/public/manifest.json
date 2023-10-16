@@ -1,0 +1,18 @@
+{
+   "name": "DSWS Extension",
+   "description": "This extension is made for demonstration purposes",
+   "version": "0.0.1",
+   "manifest_version": 2,
+   "permissions": [
+      "activeTab",
+      "scripting"
+   ],
+   "background": {
+      "scripts": ["background.js"],
+      "persistent": false
+   },
+   "browser_action": {
+      "default_icon": "d.png",
+      "default_title": "DSWS"
+   }
+}
