@@ -220,7 +220,6 @@ func PackDir(base_dir string, output_path string) {
 
 		// Set up compression
 		gz_writer := gzip.NewWriter(in_zip_writer)
-		defer gz_writer.Close()
 
 		f_reader, err := os.Open(filepath.Join(base_dir, file_info.Path))
 		if err != nil {
@@ -231,8 +230,8 @@ func PackDir(base_dir string, output_path string) {
 			log.Fatal(err)
 		}
 
-		// If we don't flush the code WONT'T WORK!!!
-		if err := gz_writer.Flush(); err != nil {
+		// If we don't close the gz_writer, the code WONT'T WORK!!!
+		if err := gz_writer.Close(); err != nil {
 			log.Fatal(err)
 		}
 
