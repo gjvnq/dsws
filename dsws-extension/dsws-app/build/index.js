@@ -18,8 +18,12 @@ window.onload = function(){
             // Acionar o clique no input de arquivo
             fileInput.click();
         });
-        // Faz o link entre o clique no botão com a funçao onFileInput
+        // Faz o link entre o clique no botão com a função onFileInput
         fileInput.addEventListener("input", onFileInput);
+        // Ao arrastar um arquivo ao container não abrir uma nova aba
+        dropContainer.addEventListener("dragover", (e) => { e.preventDefault() });
+        // Faz o link entre o container com a função onDrop
+        dropContainer.addEventListener("drop", (e) => { onDrop(e) });
     }
     else {
         alert("Página carregada incorretamente, favor recarregá-la!");
@@ -29,17 +33,15 @@ window.onload = function(){
 
 function changeContainerText(file){
     dropContainerText.innerHTML = '<strong>Arquivo selecionado:</strong>&nbsp;' + 
-    file.files[0].name +
-    '<p id="dropContainerText">' +                     
-    '<a id="fileButton">browse another file</a>' +
+    file.files[0].name +                 
+    '<br><a id="fileButton">browse another file</a>' +
     '<input type="file" id="fileInput"></p>';
 
     // Re-linka os elementos criados.
-    dropContainerText = document.getElementById("dropContainerText");
     fileButton = document.getElementById("fileButton");
     fileInput = document.getElementById("fileInput");
     // Checa se os elementos foram carregados corretamente.
-    if (fileButton && fileInput && dropContainerText){
+    if (fileButton && fileInput){
         fileButton.addEventListener('click', () => {
             // Acionar o clique no input de arquivo
             fileInput.click();
@@ -52,25 +54,18 @@ function changeContainerText(file){
     }
 }
 
-// Função que é executada ao clicar no botão
-function onFileInput() {
-    var file;
-    // Se algum arquivo for enviado pelo botão mostrar também no container.
-    if (dropContainer && fileInput.files) { 
-        file = fileInput.files[0];
-        changeContainerText(fileInput);
-    }
-    var zip= new JSZip();
-    //dropContainer.innerHTML += "<strong>Arquivo selecionado:</strong>&nbsp;" + file.name;
-    var text="";
+// Função para unzipar o .dsws
+function unzipDSWS(dsws) {
     // Checa se o arquivo possui extensão .dsws
-    if (((file.name).split('.').pop()).localeCompare("dsws") === 0){
-        zip.loadAsync(file).then(function(zip) {
+    if (((dsws.name).split('.').pop()).localeCompare("dsws") === 0){
+        let zip = new JSZip();
+        let text = "";
+        zip.loadAsync(dsws).then(function(zip) {
         	Object.keys(zip.files).forEach(function(file){
                 text = text + "<strong>Arquivo selecionado:</strong>&nbsp;" + file + "<br>";
         		zip.files[file].async('string').then(function (fileData) {
-                    // Guarda "routes2.json"
-                    if (file === "routes2.json") obj = JSON.parse(fileData);
+                    // Guarda "routes_tree.json"
+                    if (file === "routes_tree.json") obj = JSON.parse(fileData);
         		})
         	})
             dropContainerText.innerHTML=text;
@@ -79,26 +74,34 @@ function onFileInput() {
     else alert("Arquivo fornecido não possui a extensão .dsws!");
 }
 
+// Função que é executada ao clicar no botão
+function onFileInput() {
+    // Se algum arquivo for enviado pelo botão
+    if (fileInput.files) {
+        // Unzipa o .dsws
+        let file = fileInput.files[0];
+        unzipDSWS(file);
+        // Mostrar no container.
+        if (dropContainer) changeContainerText(fileInput);
+    }
+}
 
-// Ao arrastar um arquivo ao container não abrir uma nova aba.
-if (dropContainer) {
-    dropContainer.ondragover = function (e) {
-        e.preventDefault();
-    };
-    dropContainer.ondrop = function (e) {
-        e.preventDefault();
+// Função que é executada ao arrastar um arquivo ao container
+function onDrop(e) {
+    e.preventDefault();
+    if (e.dataTransfer) {
+        console.log(e.dataTransfer.files[0].name);
         // Se algum arquivo for arrastado ao container mostrar seu nome no próprio container.
-        if (e.dataTransfer) {
-            console.log(e.dataTransfer.files[0].name);
-            changeContainerText(e.dataTransfer);
-            // Se algum arquivo for arrastado ao container mostrar também no input.
-            if (fileInput) {
-                const dT = new DataTransfer();
-                dT.items.add(e.dataTransfer.files[0]);
-                fileInput.files = dT.files;
-            }
-        }
-    };
+        changeContainerText(e.dataTransfer);
+        // Le o arquivo arrastado
+        let dT = new DataTransfer();
+        dT.items.add(e.dataTransfer.files[0]);
+        // Se algum arquivo for arrastado ao container mostrar também no input.
+        if (fileInput) fileInput.files = dT.files;
+        // Unzipa o .dsws
+        let file = dT.files[0];
+        unzipDSWS(file);
+    }
 };
 
 // Busca o "asset_id" do arquivo "file" desejado no JSON "obj".
