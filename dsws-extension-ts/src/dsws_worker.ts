@@ -155,7 +155,7 @@ class Dsws {
     async response_for_url(url: string): Promise<Response> {
         // url navigation
         var cur = this.routes_tree;
-        const url_parts = (url.split('?')[0]).split("/");
+        const url_parts = ((url.split('#')[0]).split('?')[0]).split("/"); // todo: use proper URL parsing
         console.log(url, 'url parts', url_parts)
         for (const url_part of url_parts) {
             if (url_part == '') {
