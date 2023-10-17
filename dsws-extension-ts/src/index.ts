@@ -19,6 +19,7 @@ interface AssetInfo {
 var RoutesTree: RouteNode = {children: new Map()};
 var AssetsInfo: Map<string, AssetInfo> = new Map();
 var Entries: Map<string, zip.Entry> = new Map();
+var DswsFilename: String = "";
 
 zip.configure({
     useWebWorkers: true,
@@ -80,17 +81,44 @@ async function process_zip(zip_file: File) {
     const entry = Entries.get("assets/"+asset_id+".gz")!;
     const tmp = await read_gzip_blob_from_zip_entry(entry);
     console.log(tmp);
+
+    const el = document.getElementById("main-iframe") as HTMLIFrameElement;
+
+    // this will use our extension URL as the host which means we can use webRequests without specifying a host in the manifest
+    el.src = chrome.extension.getURL(DswsFilename+"/");
+    console.log(el.src);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log("Hello2");
     const el = document.getElementById("dsws-file-input") as HTMLInputElement;
     el.disabled = false;
-    el.addEventListener('change', function (e) {
+    el.addEventListener('change', async (e) => {
         console.log("Hello3a");
         console.log(e);
         let file = el.files!.item(0);
+        DswsFilename = file!.name;
         console.log(file)
-        process_zip(file!);
+        // process_zip(file!);
+        chrome.runtime.sendMessage({'action': 'openDswsFile', 'file': file}, async (reply) => {
+            const el = document.getElementById("main-iframe") as HTMLIFrameElement;
+
+            console.log("got reply", reply);
+            el.src = "http://dsws.localhost/"+reply.filename;
+            console.log(el.src);
+        });
     })
+});
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log(message, sender, sendResponse);
+    if (message.event == 'dswsInitialized') {
+        chrome.runtime.sendMessage({'action': 'getBlobForUrl', 'url': '/', dsws_filename: DswsFilename}, async (reply) => {
+            const el = document.getElementById("main-iframe") as HTMLIFrameElement;
+            console.log("got reply", reply);
+            const url = URL.createObjectURL(reply);
+            console.log(url);
+            el.src = url;
+        });
+    }
 });

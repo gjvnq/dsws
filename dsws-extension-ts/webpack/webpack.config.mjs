@@ -11,6 +11,7 @@ const __dirname = path.dirname(__filename);
 export default {
     mode: "production",
     entry: {
+        dsws_worker: path.resolve(__dirname, "..", "src", "dsws_worker.ts"),
         background: path.resolve(__dirname, "..", "src", "background.ts"),
         index: path.resolve(__dirname, "..", "src", "index.ts"),
         // index: {

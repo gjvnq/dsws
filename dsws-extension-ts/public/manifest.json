@@ -4,11 +4,13 @@
    "version": "0.0.1",
    "manifest_version": 2,
    "permissions": [
-      "activeTab",
-      "scripting"
+      "webRequest",
+      "webRequestBlocking",
+      "*://dsws.localhost/*",
+      "<all_urls>"
    ],
    "background": {
-      "scripts": ["background.js"],
+      "scripts": ["dsws_worker.js"],
       "persistent": false
    },
    "browser_action": {
