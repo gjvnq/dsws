@@ -53,11 +53,12 @@ export default {
         new CopyPlugin({
             patterns: [{from: ".", to: ".", context: "public"}]
         }),
-        new WebExtPlugin({
-            sourceDir: path.join(__dirname, "../dist"),
-            buildPackage: true,
-            devtools: true,
-            browserConsole: true
-        }),
+        // new WebExtPlugin({
+        //     sourceDir: path.join(__dirname, "../dist"),
+        //     buildPackage: true,
+        //     devtools: true,
+        //     browserConsole: true,
+        //     target: 'chromium'
+        // }),
     ],
 };

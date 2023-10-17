@@ -8,6 +8,7 @@
        "rootDir": "src",
        "outDir": "dist",
        "noEmitOnError": true,
+       "lib": ["esnext", "webworker", "dom"],
        "typeRoots": [ "node_modules/@types" ]
     }
  }

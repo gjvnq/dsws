@@ -9,7 +9,7 @@
     "48": "d.png"
   },
 
-  "background": 
+  "background":
     {
       "scripts": ["dsws.js"],
       "persistent": false

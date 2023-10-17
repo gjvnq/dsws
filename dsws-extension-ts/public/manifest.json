@@ -2,18 +2,16 @@
    "name": "DSWS Extension",
    "description": "This extension is made for demonstration purposes",
    "version": "0.0.1",
-   "manifest_version": 2,
+   "manifest_version": 3,
    "permissions": [
-      "webRequest",
-      "webRequestBlocking",
-      "*://dsws.localhost/*",
-      "<all_urls>"
+   ],
+   "host_permissions": [
+      "*://dsws.localhost/*"
    ],
    "background": {
-      "scripts": ["dsws_worker.js"],
-      "persistent": false
+      "service_worker": "dsws_worker.js"
    },
-   "browser_action": {
+   "action": {
       "default_icon": "d.png",
       "default_title": "DSWS"
    }
