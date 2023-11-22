@@ -26,13 +26,47 @@ document.addEventListener('DOMContentLoaded', function() {
     let fileContent = document.getElementById("FileContainer") as HTMLElement;
 
     if (message.event == 'dswsReady') {
-        const url = chrome.runtime.getURL(DswsFilename+"/");
-        console.log(url);
         const el = document.getElementById("main-iframe") as HTMLIFrameElement;
-        fileContent.style.display = 'none';        
-        el.src = url;
+        fileContent.style.display = 'none';
+        // Idiomas preferidos do usuário
+        let languages = navigator.languages;
+        console.log("Idiomas preferidos: " + languages);
+        // Idiomas preferidos mais string vazia, levando ao "index" se não achar nenhuma
+        let langs: string[] = [];
+        languages.forEach(function (l){
+            langs.push(l);
+        })
+        langs.push("");
+        // Esconde o iframe enquanto procura os idiomas preferidos.
+        el.style.display = "none";
+        // Função recursiva para procurar
+        testLanguage(el, langs, 0);
     }
 });
+
+
+function testLanguage(iframe :HTMLIFrameElement, languages :string[], index :number){
+    var url = chrome.runtime.getURL(DswsFilename+"/"+languages[index]);
+    console.log(url);
+    iframe.src = url;
+    iframe.onload = function(){
+        let page;
+        try {
+            // Se o iframe carregar uma pagina existente, ou seja, achar o idioma
+            page = (iframe.contentWindow?.document || iframe.contentDocument) as Document;
+            console.log(page.body.childNodes.length);
+            if (languages[index] === "") console.log("Conseguiu carregar o iframe padrão (index)!");
+            else console.log("Conseguiu carregar o iframe em "+ languages[index] +"!");
+            // Mostra o iframe carregado
+            iframe.style.display = "block";
+            return;
+        } catch (error) {
+            // Se não achar o idioma procura a próxima linguagem
+            console.log("Não encontrou o idioma "+languages[index]+", procurando o próximo!");
+            testLanguage(iframe, languages, ++index);
+        }
+    }
+}
 
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
