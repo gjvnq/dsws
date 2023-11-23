@@ -1,8 +1,55 @@
 var DswsFilename: String = "";
-"use strict";
 
-// var port = chrome.runtime.connect({name: "dsws-frontend"});
+let dropContainer = document.getElementById("dropContainer") as HTMLElement;
+let urlInput = document.getElementById("urlInput") as HTMLInputElement;
 
+let dropContainerText = document.getElementById("dropContainerText") as HTMLElement;
+let fileInput = document.getElementById("fileInput") as HTMLInputElement;
+let fileButton = document.getElementById('fileButton') as HTMLElement;
+
+let obj: Record<string, any> | undefined;
+let asset_ids: string[] = [];
+
+window.onload = function(){
+    dropContainer = document.getElementById("dropContainer") as HTMLElement;
+    urlInput = document.getElementById("urlInput") as HTMLInputElement;
+    dropContainerText = document.getElementById("dropContainerText") as HTMLElement;
+    fileInput = document.getElementById("fileInput") as HTMLInputElement;
+    fileButton = document.getElementById('fileButton') as HTMLElement;
+
+    if (dropContainer && urlInput && dropContainerText && fileInput && fileButton){
+        fileButton.addEventListener('click', () => {
+            fileInput.click();
+    });
+        fileInput.addEventListener("input", onFileInput);
+        dropContainer.addEventListener("dragover", (e) => { e.preventDefault() });
+        dropContainer.addEventListener("drop", (e) => { onDrop(e) });
+        
+    }
+    else {
+        alert("Página carregada incorretamente, favor recarregá-la!");
+    }
+}
+
+function onDrop(e: DragEvent) {
+    e.preventDefault();
+    if (e.dataTransfer) {
+        console.log((e.dataTransfer as DataTransfer).files[0].name);
+        // Se algum arquivo for arrastado ao container mostrar seu nome no próprio container.
+        changeContainerText(e.dataTransfer);
+        // Le o arquivo arrastado
+        let dT = new DataTransfer();
+        dT.items.add((e.dataTransfer as DataTransfer).files[0]);
+        // Se algum arquivo for arrastado ao container mostrar também no input.
+        if (fileInput) (fileInput as HTMLInputElement).files = dT.files;
+        // Unzipa o .dsws
+        let file = dT.files[0];
+        DswsFilename = file!.name;
+        console.log('file', file);
+        (navigator as Navigator).serviceWorker!.controller!.postMessage({'action': 'openDswsFile', 'file': file})
+
+    }
+}
 document.addEventListener('DOMContentLoaded', function() {
     console.log("Hello2");
     const el = document.getElementById("fileInput") as HTMLInputElement;
@@ -13,8 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let file = el.files!.item(0);
         DswsFilename = file!.name;
         console.log('file', file);
-        // process_zip(file!);
-        // chrome.runtime.sendMessage({'action': 'openDswsFile', 'file': file, 'buf': buf});
         (navigator as Navigator).serviceWorker!.controller!.postMessage({'action': 'openDswsFile', 'file': file})
     })
 });
@@ -45,46 +90,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const el = document.getElementById("main-iframe") as HTMLIFrameElement;
         fileContent.style.display = 'none';
         el.src = url;
-        // chrome.runtime.sendMessage({'action': 'getBlobForUrl', 'url': '/', dsws_filename: DswsFilename}, async (reply) => {
-        //     const el = document.getElementById("main-iframe") as HTMLIFrameElement;
-        //     // console.log("got reply", reply);
-        //     // const url = URL.createObjectURL(reply);
-        //     // console.log(url);
-        //     // el.src = url;
-        // });
     }
 });
 
-
-let dropContainer = document.getElementById("dropContainer") as HTMLElement;
-let urlInput = document.getElementById("urlInput") as HTMLInputElement;
-
-let dropContainerText = document.getElementById("dropContainerText") as HTMLElement;
-let fileInput = document.getElementById("fileInput") as HTMLInputElement;
-let fileButton = document.getElementById('fileButton') as HTMLElement;
-
-let obj: Record<string, any> | undefined;
-let asset_ids: string[] = [];
-
-window.onload = function(){
-    dropContainer = document.getElementById("dropContainer") as HTMLElement;
-    urlInput = document.getElementById("urlInput") as HTMLInputElement;
-    dropContainerText = document.getElementById("dropContainerText") as HTMLElement;
-    fileInput = document.getElementById("fileInput") as HTMLInputElement;
-    fileButton = document.getElementById('fileButton') as HTMLElement;
-
-    if (dropContainer && urlInput && dropContainerText && fileInput && fileButton){
-        fileButton.addEventListener('click', () => {
-            fileInput.click();
-    });
-        fileInput.addEventListener("input", onFileInput);
-        dropContainer.addEventListener("dragover", (e) => { e.preventDefault() });
-        dropContainer.addEventListener("drop", (e) => { onDrop(e) });
-    }
-    else {
-        alert("Página carregada incorretamente, favor recarregá-la!");
-    }
-}
 
 function changeContainerText(file: any){
     // Restante do seu código...
@@ -97,15 +105,6 @@ function unzipDSWS(dsws: any) {
 function onFileInput() {
     // Restante do seu código...
 }
-
-function onDrop(e: any) {
-    let file = e.dataTransfer.files;
-    DswsFilename = file!.name;
-    console.log('file', file);
-    // process_zip(file!);
-    // chrome.runtime.sendMessage({'action': 'openDswsFile', 'file': file, 'buf': buf});
-    (navigator as Navigator).serviceWorker!.controller!.postMessage({'action': 'openDswsFile', 'file': file})
-};
 
 function findAssetID(obj: Record<string, any> | undefined, file: string) {
     if (!obj) return; // Verifica se 'obj' é indefinido
