@@ -1,0 +1,12 @@
+
+#navbar{
+    margin:0;
+    padding: 0;
+    display: block;
+    border:none;
+    width:100vw;
+    height: 85px;
+    background-color: white;
+    overflow: hidden;
+    
+}

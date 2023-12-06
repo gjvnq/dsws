@@ -6,15 +6,39 @@
         <title>DWSW</title>
         <script src="index.js"></script>
         <script src="runtime.js"></script>
+        <link rel="stylesheet" href="assets/css/styles.css">
+        <link rel="stylesheet" href="assets/css/iframe.css">
     </head>
 
     <body>
-        <h1>Demi Static WebSite - DSWS</h1>
+        <div id="container">
 
-        <div>
-            DSWS file: <input disabled type="file" id="dsws-file-input" accept=".dsws">
+            <iframe id="navbar" src="components/navbar.html" height="80px"></iframe>
+
+            <input type="text" id="urlInput" placeholder="Teste: Inserir url p/ obter asset_id">
+            <button type="button" onclick="urlButtonClick()">Buscar asset_id</button>
+            
+            <div id="FileContainer" style="z-index: 1;">
+                <h1 id="FileContainerText">Upload your file</h1>
+                
+                <div id="dropContainer">
+                    <div id="dropContainerImages">
+                        <img class="firstImage" src="assets/images/dragndropfirstimage.png">
+                        <img class="secondImage" src="assets/images/dragndropsecondimage.png">
+                        <img class="thirdImage" src="assets/images/dragndropthirdimage.png">
+                    </div>
+                    <p id="dropContainerText" >
+                        drag and drop your files here, or
+                        <a id="fileButton">browse</a>
+                        <input type="file" id="fileInput" class="hidden-input">
+                        your computer
+                    </p>
+                </div>
+            </div>
+            <iframe id="main-iframe" style="width:100%; height:80svh; position:absolute; top: 80px; z-index: 0;">
+                   
+            </iframe>
         </div>
-
-        <iframe id="main-iframe" style="width:100%; height:80svh"></iframe>
+    
     </body>
 </html>
