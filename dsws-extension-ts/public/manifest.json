@@ -9,7 +9,7 @@
       "*://dsws.localhost/*"
    ],
    "background": {
-      "service_worker": "dsws_worker.js"
+      "service_worker": "dsws_sw.js"
    },
    "action": {
       "default_icon": "favicon.ico",

@@ -11,6 +11,7 @@
   "devDependencies": {
     "@types/chrome": "^0.0.246",
     "@types/js-base64": "^3.3.1",
+    "@types/serviceworker": "^0.0.79",
     "copy-webpack-plugin": "^11.0.0",
     "js-base64": "^3.7.5",
     "node-polyfill-webpack-plugin": "^2.0.1",
@@ -23,6 +24,7 @@
   },
   "dependencies": {
     "@zip.js/zip.js": "^2.7.30",
+    "idb": "^8.0.0",
     "zlibt2": "^0.6.1"
   }
 }

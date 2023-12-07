@@ -1,49 +1,39 @@
+import * as idb from 'idb';
+import * as zip from "@zip.js/zip.js";
+import { Base64 } from "js-base64";
+
 // Essential UI stuff
 chrome.action.onClicked.addListener(function (e: any) {
+    console.debug("SW:")
     chrome.tabs.create({ url: "/index.html" });
 });
 
-// // Actual service worker
-// chrome.webRequest.onBeforeRequest.addListener(
-//     onBeforeRequest,
-//     {urls: ["http://_dsws/*", "https://dsws._/*", "http://dsws.localhost/*", "http://example.com/*"]},
-//     ["blocking"]
-// );
-
-// self.addEventListener('activate', function(event: any) {
-//     console.log('Claiming control');
-//     event.waitUntil((self as any).clients.claim());
-//   });
-
-
-// self.addEventListener('activate', (event: any)  => {
-//     // Take control of all pages under this SW's scope immediately,
-//     // instead of waiting for reload/navigation.
-//     console.log(self);
-//     event.waitUntil((self as any).clients.claim());
-// });
-
-
-// self.addEventListener("install", (event) => {console.log('install', event)});
-
-(self as unknown as ServiceWorkerGlobalScope).addEventListener('fetch', async (event: FetchEvent) => {
-    console.log("FETCH", event);
-    console.log(LoadedDsws);
+async function GlobalOnFetch(event: FetchEvent) {
+    console.groupCollapsed();
+    console.debug("SW: OnFetch", event);
+    console.debug("Requested URL", event.request.url);
+    console.debug("Presently loaded DSWS files: ", LoadedDsws);
     for (const [filename, dsws] of LoadedDsws) {
-        console.log(filename);
-        console.log(chrome.runtime.getURL(filename), event.request.url);
+        console.group();
+        console.debug("Current DSWS file:", filename);
         const baseUrl = chrome.runtime.getURL(filename);
+        console.debug("Current DSWS file base url:", baseUrl);
         if (event.request.url.startsWith(baseUrl)) {
             const cleanUrl = event.request.url.slice(baseUrl.length);
-            console.log(cleanUrl, event);
+            console.debug("Got a match, relative URL:", cleanUrl);
             event.respondWith((async () => {
                 return dsws.response_for_url(cleanUrl);
             })());
+            console.groupEnd();
+            break;
         }
+        console.groupEnd();
     }
-});
+    console.groupEnd();
+}
+self.addEventListener('fetch', GlobalOnFetch);
 
-self.addEventListener("message", async (event: MessageEvent) => {
+async function GlobalOnMessage(event: MessageEvent) {
     console.log('SW message', event);
     const message = event.data;
     if (message.action == 'openDswsFile') {
@@ -54,34 +44,16 @@ self.addEventListener("message", async (event: MessageEvent) => {
         await dsws.initialize();
         event.source?.postMessage({'event': 'dswsReady'});
     }
-})
+}
+self.addEventListener("message", GlobalOnMessage);
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log('web worker message', message);
-    if (message.action == 'openDswsFile') {
-        const dsws = new Dsws(message.file);
-        LoadedDsws.set(dsws.filename, dsws);
-        console.log("made dsws", dsws);
-        const reply = {"filename": dsws.filename};
-        console.log(reply);
-        sendResponse(reply);
-        console.log("initializing dsws...");
-        dsws.initialize();
-        // .then(() => {
-        //     console.log('hi423423');
-        //     chrome.runtime.sendMessage({'event': 'dswsInitialized', 'filename': dsws.filename})
-        // })
-    }
-    if (message.action == 'getBlobForUrl') {
-        const dsws = LoadedDsws.get(message.dsws_filename);
-        const blob = dsws?.get_blob_for_url(message.url);
-        console.log("response: ", blob);
-        sendResponse(blob);
-    }
-})
-
-import * as zip from "@zip.js/zip.js";
-import { Base64 } from "js-base64";
+async function GlobalOnActivate(event: ExtendableEvent) {
+    console.group();
+    console.debug("SW: OnActivate", event);
+    // TO DO: load available dsws files list from local storage
+    console.groupEnd();
+}
+self.addEventListener('activate', GlobalOnActivate);
 
 zip.configure({
     useWebWorkers: true,
@@ -125,14 +97,23 @@ class Dsws {
         this.raw_file = raw_file;
     }
 
+    async saveToIndexedDB() {
+        const db = await idb.openDB("DSWSFiles", 1);
+        db.put(this.filename, this.raw_file);
+    }
+
     async initialize() {
-        console.log("hi 1");
+        console.group();
+        console.log("SW: Dsws.initialize")
+        console.debug("raw_file", this.raw_file);
         this.blob_reader = new zip.BlobReader(this.raw_file);
-        console.log("hi 2");
+        console.debug("blob_reader", this.blob_reader);
         this.zip_reader = new zip.ZipReader(this.blob_reader);
-        console.log("hi 3");
+        console.debug("zip_reader", this.zip_reader);
         const entries = await this.zip_reader.getEntries();
-        console.log("hi 4");
+        console.debug("entries in the zip file", entries);
+
+        await this.saveToIndexedDB();
 
         // Load entries
         for (const entry of entries) {
@@ -144,7 +125,8 @@ class Dsws {
                 this.assets_info = new Map(Object.entries(await read_json_from_zip_entry(entry)));
             }
         }
-        console.log("hi 5");
+        console.log("SW: Dsws.initialize finished")
+        console.groupEnd();
     }
 
     close() {
@@ -153,6 +135,8 @@ class Dsws {
     }
 
     async response_for_url(url: string): Promise<Response> {
+        console.groupCollapsed();
+        console.debug("Generating response for URL: ", url)
         // url navigation
         var cur = this.routes_tree;
         const url_parts = ((url.split('#')[0]).split('?')[0]).split("/"); // todo: use proper URL parsing
@@ -172,6 +156,7 @@ class Dsws {
         console.log(url, '> cur', cur);
 
         if (cur == undefined || !('response' in cur)) {
+            console.groupEnd();
             return new Response(null, {status: 404});
         }
 
@@ -183,6 +168,8 @@ class Dsws {
         const headers = new Headers();
         headers.set("Content-Type", asset_info.mime);
         headers.set("Content-Length", asset_info.size.toString());
+
+        console.groupEnd();
         return new Response(await blob, {headers: headers});
     }
 
