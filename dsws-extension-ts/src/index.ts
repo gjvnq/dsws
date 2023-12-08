@@ -1,7 +1,6 @@
 var DswsFilename: String = "";
 
 let dropContainer = document.getElementById("dropContainer") as HTMLElement;
-let urlInput = document.getElementById("urlInput") as HTMLInputElement;
 
 let dropContainerText = document.getElementById("dropContainerText") as HTMLElement;
 let fileInput = document.getElementById("fileInput") as HTMLInputElement;
@@ -12,12 +11,11 @@ let asset_ids: string[] = [];
 
 window.onload = function(){
     dropContainer = document.getElementById("dropContainer") as HTMLElement;
-    urlInput = document.getElementById("urlInput") as HTMLInputElement;
     dropContainerText = document.getElementById("dropContainerText") as HTMLElement;
     fileInput = document.getElementById("fileInput") as HTMLInputElement;
     fileButton = document.getElementById('fileButton') as HTMLElement;
 
-    if (dropContainer && urlInput && dropContainerText && fileInput && fileButton){
+    if (dropContainer && dropContainerText && fileInput && fileButton){
         fileButton.addEventListener('click', () => {
             fileInput.click();
     });
@@ -143,20 +141,4 @@ function onFileInput() {
 function findAssetID(obj: Record<string, any> | undefined, file: string) {
     if (!obj) return; // Verifica se 'obj' é indefinido
     // Restante do seu código...
-};
-
-function urlButtonClick(){
-    let file = urlInput.value;
-    if (!obj) {
-        alert("Primeiro de upload do(s) arquivos! \nOu espere um pouco serem processados!");
-        return -1;
-    }
-    
-    if (file.length === 0) file = "alignment.html";
-    findAssetID(obj, file);
-
-    if (asset_ids.length > 0) alert("asset_id(s) de " + file + ":\n" + asset_ids.join("\n"));
-    else alert("Url não encontrado!");
-
-    asset_ids = [];
 };
