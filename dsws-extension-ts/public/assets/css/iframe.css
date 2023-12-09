@@ -1,12 +1,19 @@
-
-#navbar{
-    margin:0;
-    padding: 0;
+.iframe {
+    overflow: hidden;
     display: block;
     border:none;
+
+}
+
+#navbar {
+    margin:0;
+    padding: 0;
     width:100vw;
     height: 85px;
     background-color: white;
-    overflow: hidden;
     
+}
+
+#main-iframe {
+    left: 0;
 }

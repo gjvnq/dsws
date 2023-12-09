@@ -1,14 +1,10 @@
-body{
+body {
     height: 80px;
     margin:0;
     padding: 0;
 }
 
-p{
-    margin: 0;
-}
-
-navigation{
+navigation {
     height: 100%;
     display: flex;
     justify-content: space-between;
@@ -20,38 +16,44 @@ navigation{
     
 }
 
-.navbar-logo, .navbar-urls{
+p{
+    margin: 0;
+}
+
+
+.navbar-logo, .navbar-urls {
     display:flex;
 }
 
-.navbar-logo{
+.navbar-logo {
     gap: 12px;
     align-items: flex-end;
 }
 
-.navbar-logo img{
+.navbar-logo img {
     width: 60px;
     height: 60px;
 }
 
-.navbar-logo p{
+.navbar-logo p {
     font-size: 40px;
 }
 
-.navbar-logo p .grey{
+.navbar-logo p .grey {
     color: #C3C3C3;
 }
-.navbar-urls{
+
+.navbar-urls {
     list-style: none;
     gap: 20px;
 }
 
-.navbar-urls li a{
+.navbar-urls li a {
     color: black;
     text-decoration: none;
 }
 
-.navbar-urls li a:hover{
+.navbar-urls li a:hover {
     opacity: 0.6;
     border-bottom: 1px solid black;
 }
