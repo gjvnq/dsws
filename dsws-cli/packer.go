@@ -57,6 +57,9 @@ func (node *UrlRouteNode) Find(url_path string) *UrlRouteNode {
 	url_path = path.Clean(url_path)
 	url_path = strings.TrimPrefix(url_path, "/")
 	url_parts := strings.Split(url_path, "/")
+	if len(url_parts) == 1 && (url_parts[0] == "" || url_parts[0] == ".") {
+		url_parts = []string{}
+	}
 	return node.find(url_parts)
 }
 

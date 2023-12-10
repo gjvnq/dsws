@@ -3,12 +3,20 @@ let dropContainer :HTMLElement;
 let dropContainerText :HTMLElement;
 let fileInput :HTMLInputElement;
 let fileButton :HTMLElement;
+
+let navBar :HTMLDivElement;
+let backButton :HTMLButtonElement;
+let forwardButton :HTMLButtonElement;
+let pageName :HTMLDivElement;
+let mainIframe :HTMLIFrameElement;
+
 let object :Record<string, any> | undefined;
-let asset_ids :string[] = [];
 let fileContainer : HTMLElement;
 
-(navigator as Navigator).serviceWorker.addEventListener('message', (event) => {a(event)});
-const mainIframe :HTMLIFrameElement = document.getElementById("main-iframe") as HTMLIFrameElement;
+var pageLang: string = "";
+var prevPage: string;
+
+(navigator as Navigator).serviceWorker.addEventListener('message', (event) => {displayPage(event)});
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.event == 'dswsReady') {
@@ -40,12 +48,19 @@ function initializeElements() :void{
     fileInput = document.getElementById("file-input") as HTMLInputElement;
     fileButton = document.getElementById("file-button") as HTMLElement;
     fileContainer = document.getElementById("file-container") as HTMLElement;
+    navBar = document.getElementById("nav-bar") as HTMLDivElement;
+    backButton = document.getElementById("back-button") as HTMLButtonElement;
+    forwardButton = document.getElementById("forward-button") as HTMLButtonElement;
+    pageName = document.getElementById("page-name") as HTMLDivElement;
+    mainIframe = document.getElementById("main-iframe") as HTMLIFrameElement;
+
 }
 
 // $correctlyInitialized function checks if the HTML Elements were 
 // Correctly initialized.
 function correctlyInitialized() :Boolean {
-    if (dropContainer && dropContainerText && fileInput && fileButton){
+    if (dropContainer && dropContainerText && fileInput && fileButton &&
+        dropContainer && navBar && backButton && forwardButton && mainIframe){
         return true;
     }
     return false;
@@ -59,6 +74,15 @@ function addEventsListeners() :void {
     fileButton.addEventListener('click', () => {fileInput.click();});
     dropContainer.addEventListener('dragover', (e) => { e.preventDefault() });
     dropContainer.addEventListener('drop', (e) => { onDrop(e) });
+    backButton.addEventListener("click", () => {
+        prevPage = mainIframe.contentWindow!.location.href;
+
+        mainIframe.contentWindow?.history.back();
+    });
+
+    forwardButton.addEventListener("click", () => {
+        mainIframe.contentWindow?.history.forward();
+    });
 }
 
 // $onFileInput function handle file input event, if a file was uploaded,
@@ -125,6 +149,7 @@ function displayPage(event : MessageEvent){
         let languages = retrieveLanguages();
         mainIframe.style.display = "none";
         fileContainer.style.display = 'none';
+        navBar.style.display = "block";
         for(let language in languages){
             if (tryLanguage(language)){
                 break;
@@ -146,12 +171,16 @@ function retrieveLanguages(){
 }
 
 function tryLanguage(language :string) :Boolean {
+    pageLang = language;
     var url = chrome.runtime.getURL(DswsFilename+"/"+language);
     mainIframe.src = url;
     mainIframe.onload = function(){
         let page;
         try {
             page = (mainIframe.contentWindow?.document || mainIframe.contentDocument) as Document;
+            let cleanUrl = mainIframe.contentWindow!.location.href as string;
+            let urlArray = cleanUrl.split("/");
+            pageName.innerText = urlArray.slice(3).join("/");
             mainIframe.style.display = "block";
             return true;
         } catch (error) {
