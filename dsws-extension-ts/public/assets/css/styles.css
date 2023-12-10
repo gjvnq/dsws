@@ -203,7 +203,7 @@ body {
     margin-left: 50px;   
 }
 
-#navBar {
+#nav-bar {
     border-radius: 13px;
     display: flex;
     flex-direction: row;
@@ -217,7 +217,7 @@ body {
     display: none;
 }
 
-#backButton {
+#back-button {
     font-size: 18px;
     height: 30px;
     border-radius: 7px;
@@ -229,12 +229,12 @@ body {
     background-color: rgb(220, 220, 220);
 }
 
-#backButton:hover {
+#back-button:hover {
     cursor: pointer;
     opacity: 0.8;
 }
 
-#forwardButton {
+#forward-button {
     font-size: 18px;
     height: 30px;
     border-radius: 7px;
@@ -248,12 +248,12 @@ body {
     background-color: rgb(210, 210, 210);
 }
 
-#forwardButton:hover {
+#forward-button:hover {
     cursor: pointer;
     opacity: 0.8;
 }
 
-#pageName {
+#page-name {
     font-size: 20px;
     color: rgb(230, 230, 230);
     margin-top: 3px;
