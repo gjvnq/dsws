@@ -86,8 +86,21 @@ function handleMessage(event: MessageEvent){
         navBar.style.display = "block";
         let languages = retrieveLanguages();
         tryLanguages(languages);
-        
+        resetIframe();
+        // Clean the history so that previous file paths don't cause errors.
+        chrome.history.deleteAll();
     }
+}
+
+// $resetIframe function resets the main iframe so that the tested languages
+// don't appear on the browser's and the iframe's history.
+function resetIframe(){
+    let container = mainIframe.parentElement;
+    let url = mainIframe.src;
+    mainIframe.remove();
+    mainIframe.setAttribute("src", url);
+    container?.append(mainIframe);
+    mainIframe.style.display = "block";
 }
 
 // $onFileInput function handle file input event, if a file was uploaded,
@@ -163,7 +176,7 @@ function retrieveLanguages() :string[]{
 // $tryLanguages function try to display the page using
 // the languages 
 function tryLanguages(languages :string[]) :void{
-    var language
+    var language;
     for (language in languages){
         if (displayPage(languages[language])){
             return;
@@ -180,9 +193,10 @@ function displayPage(pageLang :string) :Boolean{
     var url = chrome.runtime.getURL(DswsFilename + "/" + pageLang);
     mainIframe.style.display = "none";
     mainIframe.src = url;
+    if (pageLang !== undefined) prevPage = url;
     mainIframe.onload = function(){
         try {
-            page = (mainIframe.contentWindow?.document || mainIframe.contentDocument) as Document;
+            page = (mainIframe.contentWindow!.document || mainIframe.contentDocument);
             setUrl();
             return true;
 
@@ -205,7 +219,6 @@ function setUrl() :void{
     let cleanUrl :string = mainIframe.contentWindow!.location.href as string;
     let urlArray :string[] = cleanUrl.split("/");
     pageName.innerText = urlArray.slice(3).join("/");
-    mainIframe.style.display = "block";
 }
 
 
