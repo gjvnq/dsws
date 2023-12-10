@@ -86,6 +86,7 @@ function handleMessage(event: MessageEvent){
         navBar.style.display = "block";
         let languages = retrieveLanguages();
         tryLanguages(languages);
+        
     }
 }
 
@@ -164,7 +165,7 @@ function retrieveLanguages() :string[]{
 function tryLanguages(languages :string[]) :void{
     var language
     for (language in languages){
-        if (displayPage(pageLang)){
+        if (displayPage(languages[language])){
             return;
         }
     }
