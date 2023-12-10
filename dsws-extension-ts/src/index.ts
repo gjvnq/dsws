@@ -26,7 +26,7 @@ function initializePage() :void {
     if (correctlyInitialized()) {
         addEventsListeners();
     } else {
-        alert("Page is")
+        alert("Page wasn't loaded correctly, please reload the extension!")
     }
 }
 
@@ -63,7 +63,7 @@ function correctlyInitialized() :Boolean {
 function addEventsListeners() :void {
     fileInput.addEventListener('input', onFileInput);
     fileInput.addEventListener('change', async(e) => {onFileInput()});
-    fileButton.addEventListener('click', () => {fileInput.click();});
+    fileButton.addEventListener('click', () => {fileInput.click();fileInput.value="";});
     dropContainer.addEventListener('dragover', (e) => { e.preventDefault() });
     dropContainer.addEventListener('drop', (e) => { onDrop(e) });
     
