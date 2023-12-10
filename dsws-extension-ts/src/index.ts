@@ -16,16 +16,6 @@ let fileContainer : HTMLElement;
 var pageLang: string = "";
 var prevPage: string;
 
-(navigator as Navigator).serviceWorker.addEventListener('message', (event) => {displayPage(event)});
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.event == 'dswsReady') {
-        const url = chrome.runtime.getURL(DswsFilename+"/");
-        fileContainer.style.display = 'none';
-        mainIframe.src = url;
-    }
-});
-
 // Calls $initializePage while window is loading.
 window.onload = function() { initializePage(); }
 
@@ -36,12 +26,12 @@ function initializePage() :void {
     if (correctlyInitialized()) {
         addEventsListeners();
     } else {
-        alert("Page initialized incorrectly, please reload it!");
-        location.reload();
+        alert("Page is")
     }
 }
 
-// $initializeElements function initialize the HTML Elements from the HTML file.
+// $initializeElements function initialize the HTML Elements from the HTML file
+// That will be used in the javascript.
 function initializeElements() :void{
     dropContainer = document.getElementById("drop-container") as HTMLElement;
     dropContainerText = document.getElementById("drop-container-text") as HTMLElement;
@@ -53,14 +43,16 @@ function initializeElements() :void{
     forwardButton = document.getElementById("forward-button") as HTMLButtonElement;
     pageName = document.getElementById("page-name") as HTMLDivElement;
     mainIframe = document.getElementById("main-iframe") as HTMLIFrameElement;
-
+    (navigator as Navigator).serviceWorker.addEventListener('message', (event) => { handleMessage(event) });
 }
 
 // $correctlyInitialized function checks if the HTML Elements were 
 // Correctly initialized.
+// Returns:
+// true if elements correctly initialized and false instead.
 function correctlyInitialized() :Boolean {
     if (dropContainer && dropContainerText && fileInput && fileButton &&
-        dropContainer && navBar && backButton && forwardButton && mainIframe){
+        navBar && backButton && forwardButton && mainIframe){
         return true;
     }
     return false;
@@ -74,15 +66,27 @@ function addEventsListeners() :void {
     fileButton.addEventListener('click', () => {fileInput.click();});
     dropContainer.addEventListener('dragover', (e) => { e.preventDefault() });
     dropContainer.addEventListener('drop', (e) => { onDrop(e) });
+    
     backButton.addEventListener("click", () => {
         prevPage = mainIframe.contentWindow!.location.href;
-
         mainIframe.contentWindow?.history.back();
     });
 
     forwardButton.addEventListener("click", () => {
         mainIframe.contentWindow?.history.forward();
     });
+}
+
+// $handleMessage function handle the MessageEvent when a dsws file is sent
+// If we have a dsws file try to display it in the page.
+function handleMessage(event: MessageEvent){
+    const message :MessageEvent | any = event.data;
+    if (message.event == 'dswsReady') {
+        fileContainer.style.display = 'none';
+        navBar.style.display = "block";
+        let languages = retrieveLanguages();
+        tryLanguages(languages);
+    }
 }
 
 // $onFileInput function handle file input event, if a file was uploaded,
@@ -94,10 +98,10 @@ function onFileInput() :void {
         if (transferedFile) {
             navigateToFile(transferedFile);
         } else {
-            console.log('File object is null');
+            alert('File object is null');
         }
     } else {
-        console.log('No file selected');
+        alert('No file selected');
     }
 
 }
@@ -106,7 +110,6 @@ function onFileInput() :void {
 // Check the first object transfered and then navigate to that file.
 function onDrop(event :DragEvent) :void {
     event.preventDefault();
-
     if (event.dataTransfer) {
         let dataTransferred = new DataTransfer();
         dataTransferred.items.add((event.dataTransfer as DataTransfer).files[0]);
@@ -118,19 +121,21 @@ function onDrop(event :DragEvent) :void {
 }
 
 // $navigateToFile function checks if @transferedFile is a dsws file and then post  
-// A message to load His content to the page if the check fails display  
-// Message in the allert window then reinitializate html elements.
+// A message to load his content in the page, if the check fails, display  
+// Message in the alert window then reinitializate html elements.
 function navigateToFile(transferedFile:File) :void {
     if(isDSWSFile(transferedFile)){
         DswsFilename = transferedFile!.name;
         (navigator as Navigator).serviceWorker!.controller!.postMessage({'action' :'openDswsFile', 'file' :transferedFile})
+        return;
     }
-
     alert("Transfered file is not a \'.dsws\' extension");
     initializePage();
 }
 
-// Chech if file name ends with '.dsws'
+// $isDWSWSFile function checks if file name ends with '.dsws'
+// Returns:
+// true if the file is a .dsws and false instead.
 function isDSWSFile(transferedFile :File) :Boolean {
     if(!transferedFile.name.endsWith(".dsws")){
         return false;
@@ -138,54 +143,68 @@ function isDSWSFile(transferedFile :File) :Boolean {
     return true;
 }
 
-// $displayPage function receive a Message as an @event,
-// if the message says that 'dswsReady' select the user
-// languages to display the page. If it doesn't work
-// displays the page in the regular language.
-function displayPage(event : MessageEvent){    
-    const message = event.data;
-    
-    if (message.event == 'dswsReady') {
-        let languages = retrieveLanguages();
-        mainIframe.style.display = "none";
-        fileContainer.style.display = 'none';
-        navBar.style.display = "block";
-        for(let language in languages){
-            if (tryLanguage(language)){
-                break;
-            }
+// $retrieveLanguages function return a list with the navigator
+// languages and an empty string at the last position, so, if
+// any language could be displayed the regular language of
+// the page would be used instead.
+// 
+// Returns:
+// The string array containing the languages.
+function retrieveLanguages() :string[]{
+    let languages: string[] = [];
+    navigator.languages.forEach((language) =>{
+        languages.push(language);
+    })
+    languages.push("");
+    return languages;
+}
+
+// $tryLanguages function try to display the page using
+// the languages 
+function tryLanguages(languages :string[]) :void{
+    var language
+    for (language in languages){
+        if (displayPage(pageLang)){
+            return;
         }
     }
 }
 
-// $retrieveLanguages return a list off user languages that can be 
-// Used to display user page and add at the last position an empty
-// String that can be used to display files current language. 
-function retrieveLanguages(){
-    let languages :string[] = [];
-    navigator.languages.forEach((language)=>
-        languages.push(language)
-    );
-    languages.push("");
-    return languages
-}
-
-function tryLanguage(language :string) :Boolean {
-    pageLang = language;
-    var url = chrome.runtime.getURL(DswsFilename+"/"+language);
+// $displayPage function recieve a pageLang and try to display the page
+// Using the language.
+// Returns:
+// true if the page could be displayed and false instead.
+function displayPage(pageLang :string) :Boolean{
+    let page :Document;
+    var url = chrome.runtime.getURL(DswsFilename + "/" + pageLang);
+    mainIframe.style.display = "none";
     mainIframe.src = url;
     mainIframe.onload = function(){
-        let page;
         try {
             page = (mainIframe.contentWindow?.document || mainIframe.contentDocument) as Document;
-            let cleanUrl = mainIframe.contentWindow!.location.href as string;
-            let urlArray = cleanUrl.split("/");
-            pageName.innerText = urlArray.slice(3).join("/");
-            mainIframe.style.display = "block";
+            setUrl();
             return true;
+
         } catch (error) {
-            return false;
+            if (pageLang === undefined) {
+                mainIframe.contentWindow!.location.href = prevPage;
+                mainIframe.style.display = "block";
+                return true;
+            }
+            else{ 
+                return false;
+            }
         }
     }
     return false;
 }
+
+// $setUrl function set the page url in the inner url bar.
+function setUrl() :void{
+    let cleanUrl :string = mainIframe.contentWindow!.location.href as string;
+    let urlArray :string[] = cleanUrl.split("/");
+    pageName.innerText = urlArray.slice(3).join("/");
+    mainIframe.style.display = "block";
+}
+
+
