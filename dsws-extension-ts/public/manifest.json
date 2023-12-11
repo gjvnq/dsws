@@ -1,6 +1,9 @@
 {
    "name": "DSWS Extension",
    "description": "This extension is made for demonstration purposes",
+   "icons": {
+      "48":"favicon.ico"
+   },
    "version": "0.0.1",
    "manifest_version": 3,
    "permissions": [
