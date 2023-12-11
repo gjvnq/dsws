@@ -252,6 +252,10 @@ body {
 
 #page-name {
     font-size: 20px;
+    border-radius: 7px;
     color: rgb(230, 230, 230);
-    margin-top: 3px;
+    background-color: rgb(76, 76, 76);
+    margin-top: 1px;
+    padding-left: 5px;
+    width: 1000px;
 }

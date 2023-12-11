@@ -9,13 +9,12 @@ let fileButton :HTMLElement;
 let navBar :HTMLDivElement;
 let backButton :HTMLButtonElement;
 let forwardButton :HTMLButtonElement;
-let pageName :HTMLDivElement;
+let pageName :HTMLInputElement;
 let mainIframe :HTMLIFrameElement;
 
 let object :Record<string, any> | undefined;
 let fileContainer : HTMLElement;
 
-var pageLang: string = "";
 var prevPage: string;
 
 // Calls $initializePage and $animateElements after page load.
@@ -46,7 +45,7 @@ function initializeElements() :void{
     navBar = document.getElementById("url-bar") as HTMLDivElement;
     backButton = document.getElementById("back-button") as HTMLButtonElement;
     forwardButton = document.getElementById("forward-button") as HTMLButtonElement;
-    pageName = document.getElementById("page-name") as HTMLDivElement;
+    pageName = document.getElementById("page-name") as HTMLInputElement;
     mainIframe = document.getElementById("main-iframe") as HTMLIFrameElement;
     (navigator as Navigator).serviceWorker.addEventListener('message', (event) => { handleMessage(event) });
 }
@@ -79,6 +78,12 @@ function addEventsListeners() :void {
 
     forwardButton.addEventListener("click", () => {
         mainIframe.contentWindow?.history.forward();
+    });
+
+    mainIframe.addEventListener("load", ()=>{
+        let cleanUrl :string = mainIframe.contentWindow!.location.href as string;
+        let urlArray :string[] = cleanUrl.split("/");
+        pageName.value = urlArray.slice(3).join("/");
     });
 }
 
@@ -202,7 +207,6 @@ function displayPage(pageLang :string) :Boolean{
     mainIframe.onload = function(){
         try {
             page = (mainIframe.contentWindow!.document || mainIframe.contentDocument);
-            setUrl();
             return true;
 
         } catch (error) {
@@ -218,12 +222,3 @@ function displayPage(pageLang :string) :Boolean{
     }
     return false;
 }
-
-// $setUrl function set the page url in the inner url bar.
-function setUrl() :void{
-    let cleanUrl :string = mainIframe.contentWindow!.location.href as string;
-    let urlArray :string[] = cleanUrl.split("/");
-    pageName.innerText = urlArray.slice(3).join("/");
-}
-
-
