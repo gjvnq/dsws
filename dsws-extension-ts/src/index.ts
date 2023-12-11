@@ -80,7 +80,7 @@ function addEventsListeners() :void {
         mainIframe.contentWindow?.history.forward();
     });
 
-    mainIframe.addEventListener("load", ()=>{
+    mainIframe.addEventListener("load", () => {
         let cleanUrl :string = mainIframe.contentWindow!.location.href as string;
         let urlArray :string[] = cleanUrl.split("/");
         pageName.value = urlArray.slice(3).join("/");
@@ -93,7 +93,7 @@ function handleMessage(event: MessageEvent){
     const message :MessageEvent | any = event.data;
     if (message.event == 'dswsReady') {
         fileContainer.style.display = 'none';
-        navBar.style.display = "block";
+        navBar.style.display = "flex";
         let languages = retrieveLanguages();
         tryLanguages(languages);
         resetIframe();

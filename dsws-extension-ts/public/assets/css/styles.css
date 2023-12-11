@@ -183,10 +183,11 @@ body {
 
 #content {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100vw;
-    height: 80vh;
+    height: calc(100vh - 80px);
     background: #0e2866 url(../images/background.png) center 0;
 }
 
@@ -200,62 +201,58 @@ body {
 }
 
 #url-bar {
-    z-index: 1;
-    border-radius: 13px;
+    justify-self: center;
+    align-self: center;
+    gap: 15px;
+    z-index: 3;
+    position: relative;
+    top: -290px;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     background-color: rgb(76, 76, 76);
-    width: 95%; 
+    width: 100%; 
     height: 35px; 
     margin-top: 7px;
-    padding-left: 40px;
-    display: none;
 }
 
-#back-button {
-    font-size: 18px;
-    height: 30px;
-    border-radius: 7px;
-    float: left;
-    color: black;
+#forward-button, #back-button {
+    display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 3px;
-    background-color: rgb(220, 220, 220);
-}
-
-#back-button:hover {
-    cursor: pointer;
-    opacity: 0.8;
-}
-
-#forward-button {
     font-size: 18px;
     height: 30px;
-    border-radius: 7px;
+    width: 30px;
+    border-radius: 30px;
     float: left;
-    color: black;
-    justify-content: center;
-    align-items: center;
-    margin-top: 3px;
-    margin-left: 3px;
-    margin-right: 15px;
-    background-color: rgb(210, 210, 210);
+    background-color: transparent;
+    border-color: transparent;
+
 }
 
-#forward-button:hover {
+#forward-button:hover, #back-button:hover {
     cursor: pointer;
     opacity: 0.8;
+    background-color: #646464;
+}
+
+#forward-button img, #back-button img{
+    width: 18px;
+}
+
+#back-button img {
+    transform: rotate(180deg)
 }
 
 #page-name {
-    font-size: 20px;
-    border-radius: 7px;
+    font-size: 14px;
+    border-radius: 20px;
     color: rgb(230, 230, 230);
     background-color: rgb(76, 76, 76);
     margin-top: 1px;
     padding-left: 5px;
-    width: 1000px;
+    width: 80%;
+    height: 60%;
+    padding: 0 20px 0 20px;
 }
