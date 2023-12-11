@@ -21,11 +21,64 @@ p{
 }
 
 
+.navbar-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+    font-size: .79rem;
+    font-weight: normal;
+    height: auto;
+    min-height: 36px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 6px 12px;
+    border: 0;
+    outline: 0;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    -webkit-appearance: none;
+    color: white;
+    text-decoration: none;
+    box-shadow: -0.5px 0.5px 0.5px rgba(0, 0, 0, 0.5);
+
+}
+
+.regular-button{
+    background-color: #0070F0;
+    width: 80px;
+}
+
+.regular-button:hover{
+    background-color: #0f53a1;
+}
+#upload-button{
+    background-color: #33CC66;
+    text-align: center;
+}
+
+#upload-button:hover{
+    background-color: #16aa48;
+}
+
+.navbar-button:hover {
+    cursor: pointer;
+}
+
 .navbar-logo, .navbar-urls {
     display:flex;
 }
 
+.upload-image{
+    width: 35px;
+    height: 35px;
+}
 .navbar-logo {
+    text-decoration: none; 
+    color:inherit;
     gap: 12px;
     align-items: flex-end;
 }
@@ -48,12 +101,3 @@ p{
     gap: 20px;
 }
 
-.navbar-urls li a {
-    color: black;
-    text-decoration: none;
-}
-
-.navbar-urls li a:hover {
-    opacity: 0.6;
-    border-bottom: 1px solid black;
-}
