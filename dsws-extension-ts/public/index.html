@@ -4,10 +4,14 @@
     <head>
         <meta charset="UTF-8">
         <title>DWSW</title>
-        <script src="runtime.js"></script>
+        <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
         <script src="index.js"></script>
+        <script src="runtime.js"></script>
+        <script src="animations.js"></script>
         <link rel="stylesheet" href="assets/css/styles.css">
         <link rel="stylesheet" href="assets/css/iframe.css">
+        <link rel="stylesheet" href="assets/css/animation.css">
+
     </head>
 
     <body>
@@ -16,22 +20,33 @@
             <iframe id="navbar" class="iframe" src="components/navbar.html" height="80px"></iframe>
             <div id="content">
                 
-                <div id="nav-bar" style="z-index: 1;">
+                <div id="url-bar">
                     <button id="back-button" formtarget="main-iframe">&laquo; Previous</button>
                     <button id="forward-button" formtarget="main-iframe">Next &raquo;</button>
                     <div id="page-name">Nome da página</div>
                 </div>
 
-                <div id="file-container" style="z-index: 2;">
+                <div id="file-container">
                     <h1 id="file-container-text">Upload your file</h1>
                     
                     <div id="drop-container">
                         <div id="drop-container-images">
-                            <img class="first-image" src="assets/images/dragndropfirstimage.png">
-                            <img class="second-image" src="assets/images/dragndropsecondimage.png">
-                            <img class="third-image" src="assets/images/dragndropthirdimage.png">
+                            <div>
+                                <img id="first-image" class="first-image container-image" src="assets/images/dragndropfirstimage.png">
+                                <img class="circular-shadow" src="assets/images/bottom-shadow.png">
+                            </div>
+                            
+                            <div>
+                                <img class="second-image container-image" src="assets/images/dragndropsecondimage.png">
+                                <img class="circular-shadow" src="assets/images/bottom-shadow.png">
+                            </div>
+
+                            <div>
+                                <img class="third-image container-image" src="assets/images/dragndropthirdimage.png">
+                                <img class="circular-shadow" src="assets/images/bottom-shadow.png">
+                            </div>
                         </div>
-                        <p id="drop-container-text" >
+                        <p id="drop-container-text">
                             drag and drop your files here, or
                             <a id="file-button">browse</a>
                             <input type="file" id="file-input" class="hidden-input">
@@ -40,11 +55,10 @@
                     </div>
                 </div>
 
-                
-
-                <iframe id="main-iframe" name="main-iframe" class="iframe" style="width:100%; height:80svh; position:absolute; top: 80px; z-index: 0;"></iframe>
+                <iframe id="main-iframe" name="main-iframe" class="iframe"></iframe>
+            
             </div>
-
+            <iframe id="footer" class="iframe" src="components/footer.html"></iframe>
         </div>
     
     </body>
