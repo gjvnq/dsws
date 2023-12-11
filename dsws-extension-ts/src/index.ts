@@ -1,3 +1,5 @@
+import { animateElements } from "./animations";
+
 var DswsFilename :String = "";
 let dropContainer :HTMLElement;
 let dropContainerText :HTMLElement;
@@ -16,8 +18,11 @@ let fileContainer : HTMLElement;
 var pageLang: string = "";
 var prevPage: string;
 
-// Calls $initializePage while window is loading.
-window.onload = function() { initializePage(); }
+// Calls $initializePage and $animateElements after page load.
+window.onload = function() { 
+    initializePage(); 
+    animateElements();
+}
 
 // $initializePage retrieve the HTML Elements and add the necessary 
 // EventsListener's.
@@ -38,7 +43,7 @@ function initializeElements() :void{
     fileInput = document.getElementById("file-input") as HTMLInputElement;
     fileButton = document.getElementById("file-button") as HTMLElement;
     fileContainer = document.getElementById("file-container") as HTMLElement;
-    navBar = document.getElementById("nav-bar") as HTMLDivElement;
+    navBar = document.getElementById("url-bar") as HTMLDivElement;
     backButton = document.getElementById("back-button") as HTMLButtonElement;
     forwardButton = document.getElementById("forward-button") as HTMLButtonElement;
     pageName = document.getElementById("page-name") as HTMLDivElement;

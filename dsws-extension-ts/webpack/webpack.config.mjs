@@ -14,6 +14,7 @@ export default {
         dsws_worker: path.resolve(__dirname, "..", "src", "dsws_worker.ts"),
         background: path.resolve(__dirname, "..", "src", "background.ts"),
         index: path.resolve(__dirname, "..", "src", "index.ts"),
+        animations: path.resolve(__dirname, "..", "src", "animations.ts"),
         // index: {
         //     import: path.resolve(__dirname, "..", "src", "index.ts"),
         //     dependOn: "zipjs",
