@@ -3,20 +3,23 @@ body {
     padding: 0;
 }
 footer {
-    text-align: start; 
     display: flex; 
     align-items: center; 
     justify-content: stretch; 
     font-size: 12px; 
     color: rgb(168, 165, 165); 
     background-color: rgb(41, 39, 39); 
-    width: 100vw;
+    width: 100%;
 }
 
-footer a {
-    margin-right: 10px;
+footer p{
+    text-align: center;
+}
+
+footer a, footer p{
+    margin: 20px 0 0 10px;
 }
 
 footer a img{
-    width: 50vh;
+    width: 10%;
 }
