@@ -164,7 +164,7 @@ function onDrop(event :DragEvent) :void {
         let transferedFile :File = dataTransferred.files[0];
         navigateToFile(transferedFile);
     }
-
+    event.stopImmediatePropagation();
 }
 
 // $navigateToFile function checks if @transferedFile is a dsws file and then post  
