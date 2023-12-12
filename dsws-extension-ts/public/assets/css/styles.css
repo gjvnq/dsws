@@ -204,6 +204,7 @@ body {
 }
 
 .about-text{
+    text-align: justify;
     display: flex;
     flex-direction: row;
 }
@@ -212,7 +213,7 @@ body {
     text-align: center;
 }
 
-#inner-content p {
+#inner-content {
     text-align: justify;
 }
 
