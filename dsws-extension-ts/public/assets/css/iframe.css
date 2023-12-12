@@ -1,6 +1,5 @@
 .iframe {
     overflow: hidden;
-    display: block;
     border:none;
 
 }
@@ -21,8 +20,8 @@
 
 #main-iframe {
     width:100%; 
-    height: calc(100% - 210px); 
-    position:absolute; 
+    /* height: calc(100% - 210px);  */
+    flex-grow: 1;
     top: 115px; 
     z-index: 0;
 }

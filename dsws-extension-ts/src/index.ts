@@ -11,6 +11,7 @@ let backButton :HTMLButtonElement;
 let forwardButton :HTMLButtonElement;
 let pageName :HTMLInputElement;
 let mainIframe :HTMLIFrameElement;
+let footerIframe :HTMLIFrameElement;
 
 let object :Record<string, any> | undefined;
 let fileContainer : HTMLElement;
@@ -47,6 +48,7 @@ function initializeElements() :void{
     forwardButton = document.getElementById("forward-button") as HTMLButtonElement;
     pageName = document.getElementById("page-name") as HTMLInputElement;
     mainIframe = document.getElementById("main-iframe") as HTMLIFrameElement;
+    footerIframe = document.getElementById("footer") as HTMLIFrameElement;
     (navigator as Navigator).serviceWorker.addEventListener('message', (event) => { handleMessage(event) });
 }
 
@@ -88,11 +90,12 @@ function addEventsListeners() :void {
             pageName.value = "#external-page";
         }
         else{
+            mainIframe.classList.remove('hidden');
             let cleanUrl :string = mainIframe.contentWindow!.location.href as string;
             let urlArray :string[] = cleanUrl.split("/");
             pageName.value = urlArray.slice(3).join("/");
+            footerIframe.classList.add('hidden');
         }
-
     });
 }
 
