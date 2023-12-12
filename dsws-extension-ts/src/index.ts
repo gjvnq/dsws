@@ -65,9 +65,9 @@ function correctlyInitialized() :Boolean {
 // $addEventListeners function handle adding the @fileInput, @fileButton and
 // @dropContainer eventsListeners to check when an event will occur.
 function addEventsListeners() :void {
-    fileInput.addEventListener('input', onFileInput);
-    fileInput.addEventListener('change', async(e) => {onFileInput()});
-    fileButton.addEventListener('click', () => {fileInput.click();fileInput.value="";});
+    //fileInput.addEventListener('input', (e) => { onFileInput(e) });
+    fileInput.addEventListener('change', async(e) => {onFileInput(e);});
+    fileButton.addEventListener('click', (e) => {fileInput.click();fileInput.value="";e.stopImmediatePropagation();});
     dropContainer.addEventListener('dragover', (e) => { e.preventDefault() });
     dropContainer.addEventListener('drop', (e) => { onDrop(e) });
     
@@ -139,7 +139,7 @@ function resetIframe(){
 // $onFileInput function handle file input event, if a file was uploaded,
 // Check if there is a file and if its not a null object and then navigate
 // to that file.
-function onFileInput() :void {
+function onFileInput(event :Event) :void {
     if (fileInput.files && fileInput.files.length > 0) {
         const transferedFile :File | null = fileInput.files.item(0);
         if (transferedFile) {
@@ -150,7 +150,7 @@ function onFileInput() :void {
     } else {
         alert('No file selected');
     }
-
+    event.stopImmediatePropagation();
 }
 
 // $onDrop function handle drag&drop @event, if a data was transfered,
