@@ -72,19 +72,42 @@ function addEventsListeners() :void {
     dropContainer.addEventListener('drop', (e) => { onDrop(e) });
     
     backButton.addEventListener("click", () => {
-        prevPage = mainIframe.contentWindow!.location.href;
-        mainIframe.contentWindow?.history.back();
+        if (isCrossOrigin(mainIframe)) history.back();
+        else{
+            prevPage = mainIframe.contentWindow!.location.href;
+            mainIframe.contentWindow?.history.back();
+        }
     });
 
     forwardButton.addEventListener("click", () => {
-        mainIframe.contentWindow?.history.forward();
+        if (isCrossOrigin(mainIframe)) history.forward();
+        else mainIframe.contentWindow?.history.forward();
     });
 
     mainIframe.addEventListener("load", () => {
-        let cleanUrl :string = mainIframe.contentWindow!.location.href as string;
-        let urlArray :string[] = cleanUrl.split("/");
-        pageName.value = urlArray.slice(3).join("/");
+        if (isCrossOrigin(mainIframe)){
+            pageName.value = "#external-page";
+        }
+        else{
+            let cleanUrl :string = mainIframe.contentWindow!.location.href as string;
+            let urlArray :string[] = cleanUrl.split("/");
+            pageName.value = urlArray.slice(3).join("/");
+        }
+
     });
+}
+
+// $isCrossOrigin function checks if an iframe loaded a page from external
+// sources, returning true if so and false if not. 
+function isCrossOrigin(iframe :HTMLIFrameElement) {
+    let html = null;
+    try { 
+      var doc = (iframe.contentDocument || iframe.contentWindow!.document);
+      html = doc.body.innerHTML;
+    } catch(err){
+      console.log("Error on cross-origin: "+err);
+    }
+    return(html === null);
 }
 
 // $handleMessage function handle the MessageEvent when a dsws file is sent
