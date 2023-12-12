@@ -6,24 +6,23 @@
 }
 
 #footer{
-    width: 100vw;
-    height: 9svh;
+    width: 100%;
+    height: 90px;
 }
 
 #navbar {
     margin:0;
     padding: 0;
-    width:100vw;
+    width:100%;
     height: 85px;
     background-color: white;
     
 }
 
 #main-iframe {
-    left: 0;
     width:100%; 
-    height:calc(80svh - 35px); 
+    height: calc(100% - 210px); 
     position:absolute; 
-    top: 120px; 
+    top: 115px; 
     z-index: 0;
 }
