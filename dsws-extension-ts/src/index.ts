@@ -65,7 +65,6 @@ function correctlyInitialized() :Boolean {
 // $addEventListeners function handle adding the @fileInput, @fileButton and
 // @dropContainer eventsListeners to check when an event will occur.
 function addEventsListeners() :void {
-    //fileInput.addEventListener('input', (e) => { onFileInput(e) });
     fileInput.addEventListener('change', async(e) => {onFileInput(e);});
     fileButton.addEventListener('click', (e) => {fileInput.click();fileInput.value="";e.stopImmediatePropagation();});
     dropContainer.addEventListener('dragover', (e) => { e.preventDefault() });
